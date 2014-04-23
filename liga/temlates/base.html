@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% title %}</title>
+</head>
+<body>
+<div id="header"></div>
+<div id="content">
+    <div id="sidepanel">
+        <ul>
+            <li>Strona Główna</li>
+            <li>Ligi</li>
+            <li>Drużyny</li>
+            <li>Zawodnicy</li>
+            <li>Trenerzy</li>
+            <li>Sędziowie</li>
+        </ul>
+        <!-- Tu ma być if -->
+        <ul>
+            <li>Dodaj ligę</li>
+            <li>Dodaj drużynę</li>
+            <li>Dodaj zawodnika</li>
+            <li>Dodaj trenera</li>
+            <li>Dodaj sędziego</li>
+        </ul>
+    </div>
+    <div id="main">
+        {% content %}
+    </div>
+</div>
+<div id="footer"></div>
+</body>
+</html>
