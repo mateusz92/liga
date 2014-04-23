@@ -2,6 +2,10 @@ from django.db import models
 
 # Create your models here.
 ##fdfsdfsdfsgfdg
+class Coach(models.Model):
+    name=models.CharField(max_length=50)
+    surname=models.CharField(max_length=50)
+
 class User(models.Model):
     login = models.CharField(max_length=50)
     email = models.CharField(max_length=50)
@@ -15,16 +19,21 @@ class Team(models.Model):
     available= models.BooleanField()
     coachID=models.ForeignKey(Coach)
 
+class League(models.Model):
+    name=models.CharField(max_length=50)
+
 class Player(models.Model):
-    name=models.CharField()
-    surname=models.CharField()
+    name=models.CharField(max_length=50)
+    surname=models.CharField(max_length=50)
     available=models.BooleanField()
+
 class Referee(models.Model):
     name=models.CharField(max_length=50)
     surname=models.CharField(max_length=50)
+
 class Match(models.Model):
-    homeTeam=models.ForeignKey(Team)
-    guestTeam=models.ForeignKey(Team)
+    homeTeam=models.ForeignKey(Team, related_name='homeTeam')
+    guestTeam=models.ForeignKey(Team, related_name='guestTeam')
     homeGoals=models.IntegerField()
     guestGoals=models.IntegerField()
     date=models.DateField()
@@ -32,22 +41,17 @@ class Match(models.Model):
     refereeID=models.ForeignKey(Referee)
 
 class Goal(models.Model):
-    playetID=models.ForeignKey(Player)
-    time=models.IntegerField
+    playerID=models.ForeignKey(Player)
+    time=models.IntegerField()
     matchID=models.ForeignKey(Match)
     isPenalty=models.BooleanField()
+
 class Substitution(models.Model):
-    newPlayerID=models.ForeignKey(Player)
-    prevPlayerID=models.ForeignKey(Player)
+    newPlayerID=models.ForeignKey(Player,related_name='new_Player')
+    prevPlayerID=models.ForeignKey(Player,related_name='prev_Player')
     time=models.IntegerField()
     matchID=models.ForeignKey(Match)
     teamID=models.ForeignKey(Team)
-class Coach(models.Model):
-    name=models.CharField()
-    surname=models.CharField()
-class League(models.Model):
-    name=models.CharField()
-    teamID=models.ManyToManyField(League_Team)
 
 class League_Team(models.Model):
     points=models.IntegerField()
@@ -67,6 +71,7 @@ class PlayerStats(models.Model):
     shootsOnTarget=models.IntegerField()
     fouls=models.IntegerField()
     offsides=models.IntegerField()
+
 class League_Team_Player(models.Model):
     leagueID=models.ForeignKey(League)
     teamID=models.ForeignKey(Team)

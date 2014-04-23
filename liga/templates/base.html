@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% title %}</title>
+    <title>{% block title %} Liga {% endblock %}</title>
 </head>
 <body>
 <div id="header"></div>
@@ -25,7 +25,8 @@
         </ul>
     </div>
     <div id="main">
-        {% content %}
+        {% block content %}
+        {% endblock %}
     </div>
 </div>
 <div id="footer"></div>
