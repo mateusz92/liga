@@ -1,0 +1,22 @@
+__author__ = 'mateusz'
+from django.conf.urls import patterns, include, url
+urlpatterns = patterns('',
+    url(r'^home', views.home, name='home'),
+    url(r'^signin', liga.views.signin),
+    url(r'^register', liga.views.register),
+    url(r'^leagues', liga.views.leagues),
+    url(r'^teams', liga.views.teams),
+    url(r'^players', liga.views.players),
+    url(r'^league', liga.views.league),
+    url(r'^team', liga.views.team),
+    url(r'^player', liga.views.player),
+    url(r'^coaches', liga.views.coaches),
+    url(r'^coach', liga.views.coach),
+    url(r'^referees', liga.views.referees),
+    url(r'^referee', liga.views.referee),
+    url(r'^addleague', liga.views.addleague),
+    url(r'^addteam', liga.views.addteam),
+    url(r'^addplayer', liga.views.addplayer),
+    url(r'^addcoach', liga.views.addcoach),
+    url(r'^addreferee', liga.views.addreferee),
+    )
