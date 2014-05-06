@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}
+    Ligi
+{% endblock %}
+
+{% block content %}
+    <table>
+        <tr>
+            <td><b>Nazwa</b></td>
+            <td><b>Liczba drużyn</b></td>
+        </tr>
+        {% for league in leagues_list %}
+            <tr>
+                <td><a href="{% url 'league' league.id %}">{{ league.name }}</a></td>
+                <td>{{ league.count }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

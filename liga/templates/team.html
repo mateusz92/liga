@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}
+    {{ team.name }}
+{% endblock %}
+
+{% block content %}
+    Trener: {{ coach.name }} {{ coach.surname }}
+    <br>
+    <br>
+    Skład:
+    <br>
+    <table>
+        <tr>
+            <td><b>Imię</b></td>
+            <td><b>Nazwisko</b></td>
+        </tr>
+        {% for player in players_list %}
+            <tr>
+                <td>{{ player.player.name }}</td>
+                <td>{{ player.player.surname }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

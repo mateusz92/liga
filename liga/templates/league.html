@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}
+    {{ league.name }}
+{% endblock %}
+
+{% block content %}
+    <table>
+        <tr>
+            <td><b>Nazwa</b></td>
+            <td><b>Strzelone</b></td>
+            <td><b>Stracone</b></td>
+            <td><b>Mecze</b></td>
+            <td><b>Punkty</b></td>
+        </tr>
+        {% for team in teams_list %}
+            <tr>
+                <td><a href="{% url 'team' team.team.id league.id %}">{{ team.team.name }}</a> </td>
+                <td>{{ team.scoredGoals }}</td>
+                <td>{{ team.lostGoals }}</td>
+                <td>{{ team.matchPlayed }}</td>
+                <td>{{ team.points }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

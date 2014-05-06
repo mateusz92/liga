@@ -1,10 +1,10 @@
 from django.db import models
 
-# Create your models here.
-##fdfsdfsdfsgfdg
 class Coach(models.Model):
     name=models.CharField(max_length=50)
     surname=models.CharField(max_length=50)
+    def __str__(self):  # Python 3: def __str__(self):
+        return self.name + " " + self.surname
 
 class User(models.Model):
     login = models.CharField(max_length=50)
@@ -13,23 +13,33 @@ class User(models.Model):
     type = models.IntegerField(default=1)
     name=models.CharField(max_length=100)
     verified= models.BooleanField()
+    def __str__(self):  # Python 3: def __str__(self):
+        return self.name
 
 class Team(models.Model):
     name=models.CharField(max_length=50)
     available= models.BooleanField()
-    coachID=models.ForeignKey(Coach)
+    coach=models.ForeignKey(Coach)
+    def __str__(self):  # Python 3: def __str__(self):
+        return self.name
 
 class League(models.Model):
     name=models.CharField(max_length=50)
+    def __str__(self):  # Python 3: def __str__(self):
+        return self.name
 
 class Player(models.Model):
     name=models.CharField(max_length=50)
     surname=models.CharField(max_length=50)
     available=models.BooleanField()
+    def __str__(self):  # Python 3: def __str__(self):
+        return self.name + " " + self.surname
 
 class Referee(models.Model):
     name=models.CharField(max_length=50)
     surname=models.CharField(max_length=50)
+    def __str__(self):  # Python 3: def __str__(self):
+        return self.name + " " + self.surname
 
 class Match(models.Model):
     homeTeam=models.ForeignKey(Team, related_name='homeTeam')
@@ -37,42 +47,54 @@ class Match(models.Model):
     homeGoals=models.IntegerField()
     guestGoals=models.IntegerField()
     date=models.DateField()
-    leagueID=models.ForeignKey(League)
-    refereeID=models.ForeignKey(Referee)
+    league=models.ForeignKey(League)
+    referee=models.ForeignKey(Referee)
+    def __str__(self):  # Python 3: def __str__(self):
+        return self.homeTeam.name + "-" + self.guestTeam.name
 
 class Goal(models.Model):
-    playerID=models.ForeignKey(Player)
+    player=models.ForeignKey(Player)
     time=models.IntegerField()
-    matchID=models.ForeignKey(Match)
+    match=models.ForeignKey(Match)
     isPenalty=models.BooleanField()
+    def __str__(self):  # Python 3: def __str__(self):
+        return self.player.surname +  ":" + str(self.time)
 
 class Substitution(models.Model):
-    newPlayerID=models.ForeignKey(Player,related_name='new_Player')
-    prevPlayerID=models.ForeignKey(Player,related_name='prev_Player')
+    newPlayer=models.ForeignKey(Player,related_name='new_Player')
+    prevPlayer=models.ForeignKey(Player,related_name='prev_Player')
     time=models.IntegerField()
-    matchID=models.ForeignKey(Match)
-    teamID=models.ForeignKey(Team)
+    match=models.ForeignKey(Match)
+    team=models.ForeignKey(Team)
+    def __str__(self):  # Python 3: def __str__(self):
+        return self.prevPlayer.surname + "->" + self.newPlayer.surname
 
 class League_Team(models.Model):
     points=models.IntegerField()
     scoredGoals=models.IntegerField()
     lostGoals=models.IntegerField()
     matchPlayed=models.IntegerField()
-    teamID=models.ForeignKey(Team)
-    leagueID=models.ForeignKey(League)
+    team=models.ForeignKey(Team)
+    league=models.ForeignKey(League)
+    def __str__(self):  # Python 3: def __str__(self):
+        return self.league.name + "-" + self.team.name
 
 class PlayerStats(models.Model):
-    matchID=models.ForeignKey(Match)
-    teamID=models.ForeignKey(Team)
-    playerID=models.ForeignKey(Player)
+    match=models.ForeignKey(Match)
+    team=models.ForeignKey(Team)
+    player=models.ForeignKey(Player)
     isSubstitution=models.BooleanField()
     entryTime=models.IntegerField()
     shoots=models.IntegerField()
     shootsOnTarget=models.IntegerField()
     fouls=models.IntegerField()
     offsides=models.IntegerField()
+    def __str__(self):  # Python 3: def __str__(self):
+        return self.player.surname + " stats"
 
 class League_Team_Player(models.Model):
-    leagueID=models.ForeignKey(League)
-    teamID=models.ForeignKey(Team)
-    playerID=models.ForeignKey(Player)
+    league=models.ForeignKey(League)
+    team=models.ForeignKey(Team)
+    player=models.ForeignKey(Player)
+    def __str__(self):  # Python 3: def __str__(self):
+        return self.league.name + "-" + self.team.name + "-" + self.player.surname

@@ -1,0 +1,29 @@
+#header
+{
+    font-size: 60px;
+    font-weight: bold;
+    color: green;
+    text-align: center;
+}
+
+#sidepanel
+{
+    float: left;
+}
+#nav, #nav2
+{
+    list-style-type:none;
+    margin:0;
+    padding:0;
+}
+
+#main
+{
+    float: left;
+    position: relative;
+    margin-left: 100px;
+}
+
+td{
+    padding-right: 30px;
+}

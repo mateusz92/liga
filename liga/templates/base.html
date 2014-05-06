@@ -2,21 +2,25 @@
 <html>
 <head>
     <title>{% block title %} Liga {% endblock %}</title>
+    <link rel="Stylesheet" type="text/css" href="{{ STATIC_URL }}liga.css"/>
 </head>
 <body>
-<div id="header"></div>
+<div id="header">
+    Twoja Liga
+</div>
 <div id="content">
     <div id="sidepanel">
-        <ul>
-            <li>Strona Główna</li>
-            <li>Ligi</li>
+        <ul id="nav">
+            <li><a href="{% url 'home' %}">Strona główna</a> </li>
+            <li><a href="{% url 'leagues' %}">Ligi</a> </li>
             <li>Drużyny</li>
             <li>Zawodnicy</li>
             <li>Trenerzy</li>
             <li>Sędziowie</li>
         </ul>
         <!-- Tu ma być if -->
-        <ul>
+        <br>
+        <ul id="nav2">
             <li>Dodaj ligę</li>
             <li>Dodaj drużynę</li>
             <li>Dodaj zawodnika</li>
