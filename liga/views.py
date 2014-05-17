@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.template import loader, RequestContext
 from django.http import HttpResponseRedirect
+from liga import forms
 from liga.models import *
 
 
@@ -55,3 +56,48 @@ def team(request, t_id = "0", l_id = "0"):
             'coach' : coach
         })
         return HttpResponse(template.render(context))
+def register(request):
+    if request.method == 'POST':
+        f = forms.RegisterForm(request.POST)
+        if f.is_valid() and f.cleaned_data['password']==f.cleaned_data['confirmpassword']:
+            user = User()
+            user.login = f.cleaned_data['login']
+            user.password = f.cleaned_data['password']
+            user.email = f.cleaned_data['email']
+            user.name = f.cleaned_data['name']
+            user.verified = False
+            user.save()
+            return redirect('/')
+        else:
+            msg = 'Niepoprawne dane rejestracji'
+            f = forms.RegisterForm()
+            return render_to_response('register.html', RequestContext(request, {'formset': f, 'msg' : msg}))
+    else:
+        f = forms.RegisterForm()
+        return render_to_response('register.html', RequestContext(request, {'formset': f}))
+
+def login(request):
+    if request.method == 'POST':
+        f = forms.LoginForm(request.POST)
+        if f.is_valid():
+            user = User.objects.get(login=f.cleaned_data['login'])
+            if user!='' and user.password==f.cleaned_data['password']:
+                request.session["user"]=user.login
+                request.session["verified"] = user.verified
+                return redirect('/')
+            else:
+                msg = 'Niepoprawne dane logowania'
+                f = forms.LoginForm()
+                return render_to_response('login.html', RequestContext(request, {'formset': f, 'msg' : msg}))
+        else:
+            msg = 'Niepoprawne dane logowania'
+            f = forms.LoginForm()
+            return render_to_response('login.html', RequestContext(request, {'formset': f, 'msg' : msg}))
+    else:
+        f = forms.LoginForm()
+        return render_to_response('login.html', RequestContext(request, {'formset': f}))
+
+def logout(request):
+    del request.session["user"]
+    request.session.modified = True
+    return redirect('/')
