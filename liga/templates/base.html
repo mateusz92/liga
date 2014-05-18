@@ -10,6 +10,20 @@
 </div>
 <div id="content">
     <div id="sidepanel">
+        {% if request.session.user %}
+            Witaj {{ request.session.user }}
+            <br>
+            <br>
+        {% endif %}
+        <ul id="nav3">
+            {% if request.session.user %}
+                <li><a href="{% url 'logout' %}">Wyloguj się</a></li>
+            {% else %}
+                <li><a href="{% url 'register' %}">Zarejestruj się</a></li>
+                <li><a href="{% url 'login' %}">Zaloguj się</a></li>
+            {% endif %}
+        </ul>
+        <br>
         <ul id="nav">
             <li><a href="{% url 'home' %}">Strona główna</a> </li>
             <li><a href="{% url 'leagues' %}">Ligi</a> </li>
@@ -20,13 +34,15 @@
         </ul>
         <!-- Tu ma być if -->
         <br>
-        <ul id="nav2">
-            <li>Dodaj ligę</li>
-            <li>Dodaj drużynę</li>
-            <li>Dodaj zawodnika</li>
-            <li>Dodaj trenera</li>
-            <li>Dodaj sędziego</li>
-        </ul>
+        {% if request.session.verified %}
+            <ul id="nav2">
+                <li>Dodaj ligę</li>
+                <li>Dodaj drużynę</li>
+                <li>Dodaj zawodnika</li>
+                <li>Dodaj trenera</li>
+                <li>Dodaj sędziego</li>
+            </ul>
+        {% endif %}
     </div>
     <div id="main">
         {% block content %}
