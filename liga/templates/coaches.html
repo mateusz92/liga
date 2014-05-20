@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}
+    Trenerzy
+{% endblock %}
+
+{% block content %}
+    <table>
+        <tr>
+            <td><b>Imię</b></td>
+            <td><b>Nazwisko</b></td>
+        </tr>
+        {% for coach in coacheslist %}
+            <tr>
+                <td>{{ coach.name }}</td>
+                <td>{{ coach.surname }}</td>
+                {% if request.session.verified %}
+                    <td><a href="{% url 'deletecoach' coach.id %}">usuń</a></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

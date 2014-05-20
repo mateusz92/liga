@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}
+    Zawodnicy
+{% endblock %}
+
+{% block content %}
+    <table>
+        <tr>
+            <td><b>Imię</b></td>
+            <td><b>Nazwisko</b></td>
+        </tr>
+        {% for player in palyerslist %}
+            <tr>
+                <td>{{ player.name }}</td>
+                <td>{{ player.surname }}</td>
+                {% if player.available and request.session.verified %}
+                    <td><a href="{% url 'deleteplayer' player.id %}">usuń</a></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

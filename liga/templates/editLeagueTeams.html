@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}
+    {{ league.name }}
+{% endblock %}
+
+{% block content %}
+    Liga: {{ league.name }}
+    <br>
+    <br>
+    Skład:
+    <br>
+    <table>
+        <tr>
+            <td><b>Drużyna</b></td>
+            <td><b>Trener</b></td>
+        </tr>
+        {% for team in teams_list %}
+            <tr>
+                <td>{{ team.team.name }}</td>
+                <td>{{ team.team.coach.name }} {{ team.team.coach.surname }}</td>
+                <td><a href="{% url 'deleteteamfromleague' team.team.id league.id %}">usuń</a> </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <form action="{% url 'editleagueteams' league.id %}" method="post" accept-charset="utf-8">
+        {% csrf_token %}
+        {{ teamform }}
+        &nbsp;&nbsp;&nbsp;
+        <input type="submit" class="btn btn-default" value="Dodaj">
+    </form>
+
+{% endblock %}

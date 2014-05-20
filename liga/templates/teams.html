@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}
+    Drużyny
+{% endblock %}
+
+{% block content %}
+    <table>
+        <tr>
+            <td><b>Nazwa</b></td>
+            <td><b>Trener</b></td>
+        </tr>
+        {% for team in teamslist %}
+            <tr>
+                {% if team.available and request.session.verified %}
+                    <td><a href="{% url 'editteam' team.id %}">{{ team.name }}</a></td>
+                {% else %}
+                    <td><a href="{% url 'currentteamsquad' team.id %}">{{ team.name }}</a></td>
+                {% endif %}
+                <td>{{ team.coach.name }} {{ team.coach.surname }}</td>
+                {% if team.available and request.session.verified %}
+                    <td><a href="{% url 'deleteteam' team.id %}">usuń</a></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

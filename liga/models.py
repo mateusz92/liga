@@ -25,6 +25,7 @@ class Team(models.Model):
 
 class League(models.Model):
     name=models.CharField(max_length=50)
+    finished= models.BooleanField()
     def __str__(self):  # Python 3: def __str__(self):
         return self.name
 
@@ -98,3 +99,9 @@ class League_Team_Player(models.Model):
     player=models.ForeignKey(Player)
     def __str__(self):  # Python 3: def __str__(self):
         return self.league.name + "-" + self.team.name + "-" + self.player.surname
+
+class Team_Player(models.Model):
+    team=models.ForeignKey(Team)
+    player=models.ForeignKey(Player)
+    def __str__(self):  # Python 3: def __str__(self):
+        return self.team.name + "-" + self.player.surname

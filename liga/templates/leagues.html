@@ -15,6 +15,9 @@
             <tr>
                 <td><a href="{% url 'league' league.id %}">{{ league.name }}</a></td>
                 <td>{{ league.count }}</td>
+                {% if request.session.verified %}
+                    <td><a href="{% url 'editleagueteams' league.id %}">edytuj</a></td>
+                {% endif %}
             </tr>
         {% endfor %}
     </table>

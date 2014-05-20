@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}
+    {{ team.name }}
+{% endblock %}
+
+{% block content %}
+    <form action="{% url 'editteamcoach' team.id %}" method="post" accept-charset="utf-8">
+        {% csrf_token %}
+        {{ coachform }}
+        &nbsp;&nbsp;&nbsp;
+        <input type="submit" class="btn btn-default" value="Zmień">
+    </form>
+    <br>
+    <br>
+    Skład:
+    <br>
+    <table>
+        <tr>
+            <td><b>Imię</b></td>
+            <td><b>Nazwisko</b></td>
+        </tr>
+        {% for player in players_list %}
+            <tr>
+                <td>{{ player.player.name }}</td>
+                <td>{{ player.player.surname }}</td>
+                <td><a href="{% url 'deleteplayerfromteam' player.player.id team.id %}">usuń</a> </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <form action="{% url 'editteam' team.id %}" method="post" accept-charset="utf-8">
+        {% csrf_token %}
+        {{ playerform }}
+        &nbsp;&nbsp;&nbsp;
+        <input type="submit" class="btn btn-default" value="Dodaj">
+    </form>
+
+{% endblock %}

@@ -10,7 +10,7 @@
 {
     float: left;
 }
-#nav, #nav2, #nav3
+.nav
 {
     list-style-type:none;
     margin:0;

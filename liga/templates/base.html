@@ -15,7 +15,7 @@
             <br>
             <br>
         {% endif %}
-        <ul id="nav3">
+        <ul class="nav">
             {% if request.session.user %}
                 <li><a href="{% url 'logout' %}">Wyloguj się</a></li>
             {% else %}
@@ -24,23 +24,23 @@
             {% endif %}
         </ul>
         <br>
-        <ul id="nav">
+        <ul class="nav">
             <li><a href="{% url 'home' %}">Strona główna</a> </li>
             <li><a href="{% url 'leagues' %}">Ligi</a> </li>
-            <li>Drużyny</li>
-            <li>Zawodnicy</li>
-            <li>Trenerzy</li>
-            <li>Sędziowie</li>
+            <li><a href="{% url 'teams' %}">Drużyny</a></li>
+            <li><a href="{% url 'players' %}">Zawodnicy</a></li>
+            <li><a href="{% url 'coaches' %}">Trenerzy</a></li>
+            <li><a href="{% url 'referees' %}">Sędziowie</a></li>
         </ul>
         <!-- Tu ma być if -->
         <br>
         {% if request.session.verified %}
-            <ul id="nav2">
-                <li>Dodaj ligę</li>
-                <li>Dodaj drużynę</li>
-                <li>Dodaj zawodnika</li>
-                <li>Dodaj trenera</li>
-                <li>Dodaj sędziego</li>
+            <ul class="nav">
+                <li><a href="{% url 'newleague' %}">Dodaj ligę</a></li>
+                <li><a href="{% url 'newteam' %}">Dodaj drużynę</a></li>
+                <li><a href="{% url 'newplayer' %}">Dodaj zawodnika</a></li>
+                <li><a href="{% url 'newcoach' %}">Dodaj trenera</a></li>
+                <li><a href="{% url 'newreferee' %}">Dodaj sędziego</a></li>
             </ul>
         {% endif %}
     </div>
