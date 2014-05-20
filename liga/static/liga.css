@@ -1,20 +1,47 @@
+*{
+    background-color: #e8e8e8;
+}
 #header
 {
     font-size: 60px;
     font-weight: bold;
     color: green;
     text-align: center;
-}
 
+}
+input[type=submit],input[type=reset]
+
+{
+    background-color: #05bf0b;
+}
+input[type=submit]:hover,input[type=reset]:hover
+{
+    background-color: #05f40c;
+}
+select
+{
+    background-color: white;
+}
+input
+{
+    background-color: white;
+}
+li,li>a{
+    width: 120%;
+    background-color: #bababa;
+}
 #sidepanel
 {
     float: left;
 }
 .nav
 {
+    width: 120%;
     list-style-type:none;
     margin:0;
     padding:0;
+    background-color: #bababa;
+
 }
 
 #main
@@ -26,4 +53,13 @@
 
 td{
     padding-right: 30px;
+}
+#main > table > tbody > tr >td,#main > table > tbody > tr >td>a
+
+{
+    background-color: #bfbfbf;
+}
+#main > table > tbody > tr:nth-child(1)>td
+{
+    background-color: transparent;
 }
