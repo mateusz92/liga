@@ -1,3 +1,4 @@
+# -*- coding: utf-8
 from django import forms
 from liga.models import *
 from django.core.exceptions import ObjectDoesNotExist
