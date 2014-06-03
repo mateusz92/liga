@@ -8,7 +8,7 @@
 {% block content %}
     <div class="title">Mecze drużyny {{ team.name }} w {{ league.name }}</div><br/>
     {% if league.finished == False %}
-    <a href="{% url 'newmatch' league.id %}">Dodaj mecz</a>
+    <a href="{% url 'newmatch' team.id league.id%}">Dodaj mecz</a>
     {% endif %}
     <br>
     <table>

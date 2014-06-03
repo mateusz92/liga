@@ -35,5 +35,5 @@ urlpatterns = patterns('',
     url(r'^finishleague/(?P<l_id>\d+)/', views.finishleague, name='finishleague'),
     url(r'^deleteleague/(?P<l_id>\d+)/', views.deleteleague, name='deleteleague'),
     url(r'^matches/(?P<t_id>\d+)/(?P<l_id>\d+)/', views.matches, name='matches'),
-    url(r'^newmatch/(?P<l_id>\d+)/', views.newmatch, name='newmatch'),
+    url(r'^newmatch/(?P<t_id>\d+)/(?P<l_id>\d+)/', views.newmatch, name='newmatch'),
 )

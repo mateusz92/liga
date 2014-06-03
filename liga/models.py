@@ -79,7 +79,7 @@ class League_Team(models.Model):
     team=models.ForeignKey(Team)
     league=models.ForeignKey(League)
     def __str__(self):  # Python 3: def __str__(self):
-        return self.league.name + "-" + self.team.name
+        return self.team.name
 
 class PlayerStats(models.Model):
     match=models.ForeignKey(Match)
@@ -92,7 +92,7 @@ class PlayerStats(models.Model):
     fouls=models.IntegerField()
     offsides=models.IntegerField()
     yellowCard=models.BooleanField()
-    redCart=models.BooleanField()
+    redCard=models.BooleanField()
     def __str__(self):  # Python 3: def __str__(self):
         return self.player.surname + " stats"
 

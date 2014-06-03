@@ -1,6 +1,6 @@
 # -*- coding: utf-8
 from django.shortcuts import render
-from datetime import datetime
+from datetime import *
 from django.db.utils import ConnectionDoesNotExist
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
@@ -519,5 +519,37 @@ def matches(request, t_id, l_id):
         league = League.objects.get(id=leagueID)
         return render_to_response('matches.html', RequestContext(request, {'mecze': mecze, 'team':team, 'league':league}))
 
-def newmatch():
-    return
+def newmatch(request, t_id, l_id):
+    leagueID = int(l_id)
+    teamID = int(t_id)
+    if leagueID > 0 and teamID > 0 and request.session["verified"]==True:
+        team = Team.objects.get(id=teamID)
+        if request.method == 'POST':
+            f = forms.NewMatch(request.POST)
+            if f.is_valid():
+                mecz = Match()
+                mecz.date = f.cleaned_data['date']
+                mecz.guestGoals = f.cleaned_data['guestGoals']
+                mecz.homeGoals = f.cleaned_data['homeGoals']
+                mecz.guestTeam = f.cleaned_data['guestTeam']
+                mecz.homeTeam = f.cleaned_data['homeTeam']
+                mecz.league = League.objects.get(id=leagueID)
+                mecz.referee = f.cleaned_data['referee']
+                mecz.save()
+                return redirect('/matches/'+t_id+'/'+l_id+'/')
+            else:
+                league = League.objects.get(id=leagueID)
+                f = forms.NewMatch()
+                f.fields['homeTeam'].queryset = League_Team.objects.filter(league=league)
+                f.fields['guestTeam'].queryset = League_Team.objects.filter(league=league)
+                msg = 'Niepoprawna data'
+                return render_to_response('newMatch.html', RequestContext(request, {'formset': f, 'msg' : msg, 'league':league, 'team':team}))
+        else:
+            league = League.objects.get(id=leagueID)
+            f = forms.NewMatch()
+            f.fields['homeTeam'].queryset = League_Team.objects.filter(league=league)
+            f.fields['guestTeam'].queryset = League_Team.objects.filter(league=league)
+            msg = ''
+            return render_to_response('newMatch.html', RequestContext(request, {'formset': f, 'msg' : msg, 'league':league, 'team':team}))
+    else:
+        return redirect('/leagues')
