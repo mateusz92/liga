@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}
+    Mecze drużyny {{ team.name }} w {{ league.name }}
+{% endblock %}
+
+{% block content %}
+    <div class="title">Mecze drużyny {{ team.name }} w {{ league.name }}</div><br/>
+    {% if league.finished == False %}
+    <a href="{% url 'newmatch' league.id %}">Dodaj mecz</a>
+    {% endif %}
+    <br>
+    <table>
+        <tr>
+            <td><b>Gospodarz</b></td>
+            <td><b>Wynik</b></td>
+            <td><b>Gość</b></td>
+            <td><b>Data</b></td>
+        </tr>
+        {% for mecz in mecze %}
+            <tr>
+                <td>{{ mecz.homeTeam.name }}</td>
+                <td>{{ mecz.homeGoals }} : {{ mecz.guestGoals }}</td>
+                <td>{{ mecz.guestTeam.name }}</td>
+                <td>{{ mecz.date }}</td>
+                <td><a href="">szczegóły</a> </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

@@ -17,15 +17,34 @@ def home(request):
     return HttpResponse(template.render(context))
 
 def leagues(request):
-    leagues_list = League.objects.all()
+    leagues_list = League.objects.filter(finished=False)
     for liga in leagues_list:
+        teams = League_Team.objects.filter(league=liga)
+        setattr(liga, 'count', teams.count())
+    finished_leagues_list = League.objects.filter(finished=True)
+    for liga in finished_leagues_list:
         teams = League_Team.objects.filter(league=liga)
         setattr(liga, 'count', teams.count())
     template = loader.get_template('leagues.html')
     context = RequestContext(request, {
-        'leagues_list' : leagues_list
+        'leagues_list' : leagues_list, 'finished_leagues_list' : finished_leagues_list
     })
     return HttpResponse(template.render(context))
+
+def finishleague(request, l_id):
+    leagueID = int(l_id)
+    if leagueID > 0 and request.session["verified"]==True:
+        league = League.objects.get(id=leagueID)
+        league.finished = True
+        league.save()
+        teams_list = League_Team.objects.filter(league=league)
+        for lt in teams_list:
+            team = Team.objects.get(id=lt.team.id)
+            team.available = True
+            team.save()
+        return redirect('/leagues')
+    else:
+        return redirect('/')
 
 def league(request, l_id = "0"):
     leagueID = int(l_id)
@@ -137,8 +156,9 @@ def newplayer(request):
                 player.surname = f.cleaned_data['surname']
                 player.available = True
                 player.save()
+                msg = 'Dodano zawodnika'
                 f = forms.NewPlayerForm()
-                return render_to_response('newPlayer.html', RequestContext(request, {'formset': f}))
+                return render_to_response('newPlayer.html', RequestContext(request, {'formset': f, 'msg' : msg}))
             else:
                 msg = 'Niepoprawne dane'
                 f = forms.NewPlayerForm()
@@ -177,8 +197,9 @@ def newreferee(request):
                 referee.name = f.cleaned_data['name']
                 referee.surname = f.cleaned_data['surname']
                 referee.save()
+                msg = 'Dodano sędziego'
                 f = forms.NewRefereeForm()
-                return render_to_response('newReferee.html', RequestContext(request, {'formset': f}))
+                return render_to_response('newReferee.html', RequestContext(request, {'formset': f, 'msg' : msg}))
             else:
                 msg = 'Niepoprawne dane'
                 f = forms.NewRefereeForm()
@@ -217,8 +238,9 @@ def newcoach(request):
                 coach.name = f.cleaned_data['name']
                 coach.surname = f.cleaned_data['surname']
                 coach.save()
+                msg = 'Dodano trenera'
                 f = forms.NewCoachForm()
-                return render_to_response('newCoach.html', RequestContext(request, {'formset': f}))
+                return render_to_response('newCoach.html', RequestContext(request, {'formset': f, 'msg' : msg}))
             else:
                 msg = 'Niepoprawne dane'
                 f = forms.NewCoachForm()
@@ -258,8 +280,9 @@ def newteam(request):
                 team.coach = f.cleaned_data['coach']
                 team.available = True
                 team.save()
+                msg = 'Dodano drużynę'
                 f = forms.NewTeamForm()
-                return render_to_response('newTeam.html', RequestContext(request, {'formset': f}))
+                return render_to_response('newTeam.html', RequestContext(request, {'formset': f, 'msg' : msg}))
             else:
                 msg = 'Niepoprawne dane'
                 f = forms.NewTeamForm()
@@ -393,8 +416,9 @@ def newleague(request):
                 league.name = f.cleaned_data['name']
                 league.finished = False
                 league.save()
+                msg = 'Dodano ligę'
                 f = forms.NewLeagueForm()
-                return render_to_response('newLeague.html', RequestContext(request, {'formset': f}))
+                return render_to_response('newLeague.html', RequestContext(request, {'formset': f, 'msg' : msg}))
             else:
                 msg = 'Niepoprawne dane'
                 f = forms.NewLeagueForm()
@@ -404,6 +428,21 @@ def newleague(request):
             return render_to_response('newLeague.html', RequestContext(request, {'formset': f}))
     else:
         return redirect('/')
+
+def deleteleague(request, l_id):
+    leagueID = int(l_id)
+    if request.session["verified"]==True and leagueID>0:
+        league = League.objects.get(id=leagueID)
+        lts = League_Team.objects.filter(league=league)
+        for lt in lts:
+            lt.delete()
+        ltps = League_Team_Player.objects.filter(league=league)
+        for ltp in ltps:
+            ltp.delete()
+        league.delete()
+        return redirect('/leagues')
+    else:
+        return redirect('/leagues')
 
 def editleagueteams(request, l_id = "0"):
     if request.session["verified"]==True:
@@ -470,3 +509,15 @@ def deleteteamfromleague(request, t_id="0", l_id="0"):
         return render_to_response('editLeagueTeams.html', RequestContext(request, {'teams_list': teams_list, 'league': league, 'teamform': f}))
     else:
         return redirect('/')
+
+def matches(request, t_id, l_id):
+    teamID = int(t_id)
+    leagueID = int(l_id)
+    if teamID>0 and leagueID>0:
+        mecze = Match.objects.filter((Q(homeTeam__id=teamID) | Q(guestTeam=teamID)  )& Q(league__id=leagueID))
+        team = Team.objects.get(id=teamID)
+        league = League.objects.get(id=leagueID)
+        return render_to_response('matches.html', RequestContext(request, {'mecze': mecze, 'team':team, 'league':league}))
+
+def newmatch():
+    return

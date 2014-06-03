@@ -6,7 +6,11 @@
 {% endblock %}
 
 {% block content %}
-    <div class="title">Liga</div>
+    <div class="title">{{ league.name }}</div>
+    {% if league.finished == False %}
+        <a href="{% url 'finishleague' league.id %}">Zakończ ligę</a>
+    {% endif %}
+    <br>
     <table>
         <tr>
             <td><b>Nazwa</b></td>
@@ -22,6 +26,7 @@
                 <td>{{ team.lostGoals }}</td>
                 <td>{{ team.matchPlayed }}</td>
                 <td>{{ team.points }}</td>
+                <td><a href="{% url 'matches' team.team.id league.id %}">zobacz mecze</a></td>
             </tr>
         {% endfor %}
     </table>

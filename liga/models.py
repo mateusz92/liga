@@ -91,6 +91,8 @@ class PlayerStats(models.Model):
     shootsOnTarget=models.IntegerField()
     fouls=models.IntegerField()
     offsides=models.IntegerField()
+    yellowCard=models.BooleanField()
+    redCart=models.BooleanField()
     def __str__(self):  # Python 3: def __str__(self):
         return self.player.surname + " stats"
 

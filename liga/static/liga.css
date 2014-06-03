@@ -63,3 +63,10 @@ td{
 {
     background-color: transparent;
 }
+
+.title
+{
+    font-size: 30px;
+    text-decoration: underline;
+    letter-spacing: 3px;
+}

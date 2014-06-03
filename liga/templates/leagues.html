@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="title">Ligi</div>
+    <div class="title">Ligi</div><br/>
     <table>
         <tr>
             <td><b>Nazwa</b></td>
@@ -18,6 +18,24 @@
                 <td>{{ league.count }}</td>
                 {% if request.session.verified %}
                     <td><a href="{% url 'editleagueteams' league.id %}">edytuj</a></td>
+                    <td><a href="{% url 'deleteleague' league.id %}">usuń</a></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table>
+    <br/>
+    <div class="title">Ligi zakończone</div><br/>
+    <table>
+        <tr>
+            <td><b>Nazwa</b></td>
+            <td><b>Liczba drużyn</b></td>
+        </tr>
+        {% for league in finished_leagues_list %}
+            <tr>
+                <td><a href="{% url 'league' league.id %}">{{ league.name }}</a></td>
+                <td>{{ league.count }}</td>
+                {% if request.session.verified %}
+                    <td><a href="{% url 'deleteleague' league.id %}">usuń</a></td>
                 {% endif %}
             </tr>
         {% endfor %}
