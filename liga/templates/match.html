@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}
+    {{ mecz.homeTeam }} - {{ mecz.guestTeam }}
+{% endblock %}
+
+{% block content %}
+    <div>
+        <table>
+            <tr>
+                <td style="width: 300px; font-size: 25px">{{ mecz.homeTeam }}</td>
+                <td style="font-size: 35px">{{ mecz.homeGoals }}</td>
+                <td>:</td>
+                <td style="font-size: 35px">{{ mecz.guestGoals }}</td>
+                <td style="width: 300px; text-align: right; font-size: 25px">{{ mecz.guestTeam }}</td>
+            </tr>
+            <tr>
+                <td>
+                    {% for goal in homeGoals %}
+                        <img src="{{ STATIC_URL }}ball.png" style="width: 15px"> {{ goal.player }}
+                        (
+                        {{ goal.time }}'
+                        {% if goal.isPenalty %}
+                            -PK
+                        {% endif %}
+                        )
+                        <a href="{% url 'deletegoal' goal.id mecz.id %}">usuń</a>
+                    {% endfor %}
+                    <br>
+                    <a href="{% url 'addgoal' mecz.id mecz.homeTeam.id %}">dodaj strzelca</a>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    {% for goal in guestGoals %}
+                        <img src="{{ STATIC_URL }}ball.png" style="width: 15px"> {{ goal.player }}
+                        (
+                        {{ goal.time }}'
+                        {% if goal.isPenalty %}
+                            -PK
+                        {% endif %}
+                        )
+                        <a href="{% url 'deletegoal' goal.id mecz.id %}">usuń</a>
+                    {% endfor %}
+                    <br>
+                    <a href="{% url 'addgoal' mecz.id mecz.guestTeam.id %}">dodaj strzelca</a>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {% for yellow in homeYellows %}
+                        <img src="{{ STATIC_URL }}yellow.png" style="width: 15px"> {{ yellow.player }}
+                    {% endfor %}
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    {% for yellow in guestYellows %}
+                        <img src="{{ STATIC_URL }}yellow.png" style="width: 15px"> {{ yellow.player }}
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {% for red in homeReds %}
+                        <img src="{{ STATIC_URL }}red.png" style="width: 15px"> {{ red.player }}
+                    {% endfor %}
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    {% for red in guestReds %}
+                        <img src="{{ STATIC_URL }}red.png" style="width: 15px"> {{ red.player }}
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {% for sub in homeSubs %}
+                        <img src="{{ STATIC_URL }}subs.png" style="width: 15px"> {{ sub.prevPlayer }} -> {{ sub.newPlayer }} ({{ sub.time }}')
+                        <a href="{% url 'deletesub' sub.id mecz.id %}">usuń</a>
+                    {% endfor %}
+                    <br>
+                    <a href="{% url 'addsub' mecz.id mecz.homeTeam.id %}">dodaj zmianę</a>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    {% for sub in guestSubs %}
+                        <img src="{{ STATIC_URL }}subs.png" style="width: 15px"> {{ sub.prevPlayer }} -> {{ sub.newPlayer }} ({{ sub.time }}')
+                        <a href="{% url 'deletesub' sub.id mecz.id %}">usuń</a>
+                    {% endfor %}
+                    <br>
+                    <a href="{% url 'addsub' mecz.id mecz.guestTeam.id %}">dodaj zmianę</a>
+                </td>
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+                <td>
+                    <a href="{% url 'addstats' mecz.id mecz.homeTeam.id %}">dodaj statystyki zawodnika</a>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a href="{% url 'addstats' mecz.id mecz.guestTeam.id %}">dodaj statystyki zawodnika</a>
+                </td>
+            </tr>
+        </table>
+        <br>
+        <table>
+            <tr>
+                <td style="width: 250px; text-align: right;">{{ homeShoots }}</td>
+                <td style="width: 250px; text-align: center;">strzały</td>
+                <td style="width: 250px; text-align: left;">{{ guestShoots }}</td>
+            </tr>
+            <tr>
+                <td style="width: 250px; text-align: right;">{{ homeShootsOnTarget }}</td>
+                <td style="width: 250px; text-align: center;">strzały na bramkę</td>
+                <td style="width: 250px; text-align: left;">{{ guestShootsOnTarget }}</td>
+            </tr>
+            <tr>
+                <td style="width: 250px; text-align: right;">{{ homeOffsides }}</td>
+                <td style="width: 250px; text-align: center;">spalone</td>
+                <td style="width: 250px; text-align: left;">{{ guestOffsides }}</td>
+            </tr>
+            <tr>
+                <td style="width: 250px; text-align: right;">{{ homeFouls }}</td>
+                <td style="width: 250px; text-align: center;">faule</td>
+                <td style="width: 250px; text-align: left;">{{ guestFouls }}</td>
+            </tr>
+        </table>
+        <br><br>
+        {% if homeStats.count > 0 %}
+        <div class="title">Statystyki zawodników {{ mecz.homeTeam }}:</div>
+        <table border="1" class="statsTable">
+            <tr>
+                <td>Zawodnik</td>
+                <td>Na boisku od minuty</td>
+                <td>Strzały</td>
+                <td>Strzały na bramkę</td>
+                <td>Spalone</td>
+                <td>Faule</td>
+            </tr>
+            {% for stats in homeStats %}
+                <tr>
+                    <td>{{ stats.player }}</td>
+                    <td>{{ stats.entryTime }}</td>
+                    <td>{{ stats.shoots }}</td>
+                    <td>{{ stats.shootsOnTarget }}</td>
+                    <td>{{ stats.offsides }}</td>
+                    <td>{{ stats.fouls }}</td>
+                    <td><a href="{% url 'deletestats' stats.id mecz.id  %}">usuń</a> </td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
+        <br><br>
+        {% if guestStats.count > 0 %}
+        <div class="title">Statystyki zawodników {{ mecz.guestTeam }}:</div>
+        <table border="1" class="statsTable">
+            <tr>
+                <td>Zawodnik</td>
+                <td>Na boisku od minuty</td>
+                <td>Strzały</td>
+                <td>Strzały na bramkę</td>
+                <td>Spalone</td>
+                <td>Faule</td>
+            </tr>
+            {% for stats in guestStats %}
+                <tr>
+                    <td>{{ stats.player }}</td>
+                    <td>{{ stats.entryTime }}</td>
+                    <td>{{ stats.shoots }}</td>
+                    <td>{{ stats.shootsOnTarget }}</td>
+                    <td>{{ stats.offsides }}</td>
+                    <td>{{ stats.fouls }}</td>
+                    <td><a href="{% url 'deletestats' stats.id mecz.id %}">usuń</a> </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    </div>
+{% endblock %}

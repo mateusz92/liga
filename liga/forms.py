@@ -52,3 +52,24 @@ class NewMatch(forms.Form):
     guestGoals = forms.IntegerField(label='Gole gościa', initial=0, widget=forms.NumberInput(attrs={'style': 'width:50px', 'min': '0', 'max': '10', 'step': '1'}))
     date = forms.DateField(label='Data', initial=date.today)
     referee = forms.ModelChoiceField(queryset=Referee.objects.all(), label='Sędzia', initial=0)
+
+class NewGoal(forms.Form):
+    scorer = forms.ModelChoiceField(queryset=Player.objects.all(), label='Strzelec', initial=0)
+    time = forms.IntegerField(label='Minuta', initial=0, widget=forms.NumberInput(attrs={'style': 'width:50px', 'min': '0', 'max': '120', 'step': '1'}))
+    penalty = forms.BooleanField(label='Karny', required=False)
+
+class NewStats(forms.Form):
+    player = forms.ModelChoiceField(queryset=Player.objects.all(), label='Zawodnik', initial=0)
+    isSubstitution = forms.BooleanField(label='Wszedł z ławki', required=False)
+    entryTime = forms.IntegerField(label='Minuta wejścia', initial=0, widget=forms.NumberInput(attrs={'style': 'width:50px', 'min': '0', 'max': '120', 'step': '1'}))
+    shoots = forms.IntegerField(label='Strzały', initial=0, widget=forms.NumberInput(attrs={'style': 'width:50px', 'min': '0', 'step': '1'}))
+    shootsOnTarget = forms.IntegerField(label='Strzały na bramkę', initial=0, widget=forms.NumberInput(attrs={'style': 'width:50px', 'min': '0', 'step': '1'}))
+    fouls = forms.IntegerField(label='Faule', initial=0, widget=forms.NumberInput(attrs={'style': 'width:50px', 'min': '0', 'step': '1'}))
+    offsides = forms.IntegerField(label='Spalone', initial=0, widget=forms.NumberInput(attrs={'style': 'width:50px', 'min': '0', 'step': '1'}))
+    yellow = forms.BooleanField(label='Żółta kartka', required=False)
+    red = forms.BooleanField(label='Czerwona kartka', required=False)
+
+class NewSub(forms.Form):
+    prevPlayer = forms.ModelChoiceField(queryset=Player.objects.all(), label='Schodzący', initial=0)
+    newPlayer = forms.ModelChoiceField(queryset=Player.objects.all(), label='Wchodzący', initial=0)
+    time = forms.IntegerField(label='Minuta', initial=0, widget=forms.NumberInput(attrs={'style': 'width:50px', 'min': '0', 'max': '120', 'step': '1'}))

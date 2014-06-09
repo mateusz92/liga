@@ -1,14 +1,51 @@
-*{
-    background-color: #e8e8e8;
+body
+{
+    background-image: url("css_background2.jpg");
+    align-content: center;
+    font-family: calibri ;
+
+}
+
+#sidepanel a {
+    text-decoration:none;
+    color: black;
+}
+
+a:visited
+{
+    color: black;
+}
+a:hover
+{
+    color: #6666FF;
 }
 #header
 {
     font-size: 60px;
     font-weight: bold;
-    color: green;
+    color: #A8A8A8;
     text-align: center;
-
 }
+#header ul
+{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#header li
+{
+    background-color: inherit;
+    display: inline;
+}
+
+#content
+{
+    background-color: #F8F8F8;
+    width: 920px;
+    margin-left: auto;
+	margin-right: auto;
+    overflow:  auto;
+}
+
 input[type=submit],input[type=reset]
 
 {
@@ -26,29 +63,47 @@ input
 {
     background-color: white;
 }
-li,li>a{
-    width: 120%;
-    background-color: #bababa;
-}
+
 #sidepanel
 {
+    width: 200px;
+    height: 100%;
+    position: relative;
     float: left;
+    text-align: left;
+    padding-left: 10px;
+    padding-top: 10px;
+
+    background-color: #E0E0E0;
+
 }
+
+#sidepanel a
+{
+    text-transform: uppercase;
+    color: black;
+}
+
 .nav
 {
-    width: 120%;
+    width: 100%;
     list-style-type:none;
     margin:0;
     padding:0;
-    background-color: #bababa;
-
+    font-size: 18px;
 }
 
 #main
 {
+    width: 690px;
     float: left;
     position: relative;
-    margin-left: 100px;
+    font-size: 18px;
+    padding-top: 10px;
+    background: #FFFFFF;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
 }
 
 td{
@@ -64,9 +119,22 @@ td{
     background-color: transparent;
 }
 
+#main table
+{
+    margin-top: 0px;
+}
+
 .title
 {
     font-size: 30px;
-    text-decoration: underline;
-    letter-spacing: 3px;
+}
+
+#login
+{
+    font-style: italic;
+}
+
+.statsTable td
+{
+     text-align: center;
 }

@@ -53,6 +53,31 @@ def league(request, l_id = "0"):
     else:
         l = League.objects.get(id = leagueID)
         teams_list = League_Team.objects.filter(league = l)
+        for tl in teams_list:
+            mecze = Match.objects.filter(Q(league=l) & (Q(homeTeam=tl.team) | Q(guestTeam=tl.team)))
+            punkty = 0
+            stracone = 0
+            strzelone = 0
+            for mecz in mecze:
+                if mecz.homeTeam == tl.team:
+                    if mecz.homeGoals > mecz.guestGoals:
+                        punkty = punkty + 3
+                    if mecz.homeGoals == mecz.guestGoals:
+                        punkty = punkty + 1
+                    stracone = stracone + mecz.guestGoals
+                    strzelone = strzelone + mecz.homeGoals
+                if mecz.guestTeam == tl.team:
+                    if mecz.homeGoals < mecz.guestGoals:
+                        punkty = punkty + 3
+                    if mecz.homeGoals == mecz.guestGoals:
+                        punkty = punkty + 1
+                    stracone = stracone + mecz.homeGoals
+                    strzelone = strzelone + mecz.guestGoals
+            tl.matchPlayed = mecze.count()
+            tl.scoredGoals = strzelone
+            tl.lostGoals = stracone
+            tl.points = punkty
+            tl.save()
         template = loader.get_template('league.html')
         context = RequestContext(request, {
             'teams_list' : teams_list,
@@ -436,6 +461,9 @@ def deleteleague(request, l_id):
         lts = League_Team.objects.filter(league=league)
         for lt in lts:
             lt.delete()
+            team = Team.objects.get(id=lt.team.id)
+            team.available = True
+            team.save()
         ltps = League_Team_Player.objects.filter(league=league)
         for ltp in ltps:
             ltp.delete()
@@ -553,3 +581,168 @@ def newmatch(request, t_id, l_id):
             return render_to_response('newMatch.html', RequestContext(request, {'formset': f, 'msg' : msg, 'league':league, 'team':team}))
     else:
         return redirect('/leagues')
+
+def match(request, m_id):
+    matchID = int(m_id)
+    if matchID > 0:
+        mecz = Match.objects.get(id=matchID)
+        homeShoots = 0
+        homeShootsOnTarget = 0
+        homeOffsides = 0
+        homeFouls = 0
+        guestShoots = 0
+        guestShootsOnTarget = 0
+        guestOffsides = 0
+        guestFouls = 0
+        homeGoals = Goal.objects.filter(Q(match=mecz) & Q(team=mecz.homeTeam)).order_by('time')
+        guestGoals = Goal.objects.filter(Q(match=mecz) & Q(team=mecz.guestTeam)).order_by('time')
+        homeYellows = PlayerStats.objects.filter(Q(match=mecz) & Q(team=mecz.homeTeam) & Q(yellowCard=True))
+        guestYellows = PlayerStats.objects.filter(Q(match=mecz) & Q(team=mecz.guestTeam) & Q(yellowCard=True))
+        homeReds = PlayerStats.objects.filter(Q(match=mecz) & Q(team=mecz.homeTeam) & Q(redCard=True))
+        guestReds = PlayerStats.objects.filter(Q(match=mecz) & Q(team=mecz.guestTeam) & Q(redCard=True))
+        homeStats = PlayerStats.objects.filter(Q(match=mecz) & Q(team=mecz.homeTeam))
+        for hs in homeStats:
+            homeShoots += hs.shoots
+            homeShootsOnTarget += hs.shootsOnTarget
+            homeOffsides += hs.offsides
+            homeFouls += hs.fouls
+        guestStats = PlayerStats.objects.filter(Q(match=mecz) & Q(team=mecz.guestTeam))
+        for gs in guestStats:
+            guestShoots += gs.shoots
+            guestShootsOnTarget += gs.shootsOnTarget
+            guestOffsides += gs.offsides
+            guestFouls += gs.fouls
+        homeSubs = Substitution.objects.filter(Q(match=mecz) & Q(team=mecz.homeTeam))
+        guestSubs = Substitution.objects.filter(Q(match=mecz) & Q(team=mecz.guestTeam))
+        return render_to_response('match.html', RequestContext(request, {'mecz':mecz, 'homeGoals':homeGoals, 'guestGoals':guestGoals,
+                                                                         'homeYellows':homeYellows, 'guestYellows':guestYellows,
+                                                                         'homeReds':homeReds, 'guestReds':guestReds,
+                                                                         'homeStats':homeStats, 'guestStats':guestStats,
+                                                                         'homeSubs':homeSubs, 'guestSubs':guestSubs,
+                                                                         'homeShoots':homeShoots, 'guestShoots':guestShoots,
+                                                                         'homeShootsOnTarget':homeShootsOnTarget, 'guestShootsOnTarget':guestShootsOnTarget,
+                                                                         'homeOffsides':homeOffsides, 'guestOffsides':guestOffsides,
+                                                                         'homeFouls':homeFouls, 'guestFouls':guestFouls}))
+    else:
+        return redirect('/')
+
+def addgoal(request, m_id, t_id):
+    matchID = int(m_id)
+    teamID = int(t_id)
+    if matchID > 0 and teamID > 0 and request.session["verified"]==True:
+        if request.method == 'POST':
+            f = forms.NewGoal(request.POST)
+            if f.is_valid():
+                mecz = Match.objects.get(id=matchID)
+                team = Team.objects.get(id=teamID)
+                goal = Goal()
+                goal.player = f.cleaned_data['scorer']
+                goal.match = mecz
+                goal.team = team
+                goal.time = f.cleaned_data['time']
+                goal.isPenalty = f.cleaned_data['penalty']
+                goal.save()
+                return redirect('/match/'+m_id+'/')
+            else:
+                return redirect('/')
+        else:
+            mecz = Match.objects.get(id=matchID)
+            team = Team.objects.get(id=teamID)
+            f = forms.NewGoal()
+            f.fields['scorer'].queryset = Team_Player.objects.filter(team=team)
+            return render_to_response('addGoal.html', RequestContext(request, {'formset':f, 'mecz':mecz, 'team':team}))
+    else:
+        return redirect('/')
+
+def deletegoal(request, g_id, m_id):
+    matchID = int(m_id)
+    goalID = int(g_id)
+    if matchID > 0 and goalID > 0 and request.session["verified"]==True:
+        goal = Goal.objects.get(id=goalID)
+        goal.delete()
+        return redirect('/match/'+m_id+'/')
+    else:
+        return redirect('/')
+
+def addstats(request, m_id, t_id):
+    matchID = int(m_id)
+    teamID = int(t_id)
+    if matchID > 0 and teamID > 0 and request.session["verified"]==True:
+        if request.method == 'POST':
+            f = forms.NewStats(request.POST)
+            if f.is_valid():
+                mecz = Match.objects.get(id=matchID)
+                team = Team.objects.get(id=teamID)
+                stats = PlayerStats()
+                stats.team = team
+                stats.match = mecz
+                stats.player = f.cleaned_data['player']
+                stats.entryTime = f.cleaned_data['entryTime']
+                stats.fouls = f.cleaned_data['fouls']
+                stats.isSubstitution = f.cleaned_data['isSubstitution']
+                stats.offsides = f.cleaned_data['offsides']
+                stats.redCard = f.cleaned_data['red']
+                stats.yellowCard = f.cleaned_data['yellow']
+                stats.shoots = f.cleaned_data['shoots']
+                stats.shootsOnTarget = f.cleaned_data['shootsOnTarget']
+                stats.save()
+                return redirect('/match/'+m_id+'/')
+            else:
+                return redirect('/')
+        else:
+            mecz = Match.objects.get(id=matchID)
+            team = Team.objects.get(id=teamID)
+            f = forms.NewStats()
+            f.fields['player'].queryset = Team_Player.objects.filter(team=team)
+            return render_to_response('addStats.html', RequestContext(request, {'formset':f, 'mecz':mecz, 'team':team}))
+    else:
+        return redirect('/')
+
+def deletestats(request, s_id, m_id):
+    matchID = int(m_id)
+    statsID = int(s_id)
+    if matchID > 0 and statsID > 0 and request.session["verified"]==True:
+        stats = PlayerStats.objects.get(id=statsID)
+        stats.delete()
+        return redirect('/match/'+m_id+'/')
+    else:
+        return redirect('/')
+
+def addsub(request, m_id, t_id):
+    matchID = int(m_id)
+    teamID = int(t_id)
+    if matchID > 0 and teamID > 0 and request.session["verified"]==True:
+        if request.method == 'POST':
+            f = forms.NewSub(request.POST)
+            if f.is_valid():
+                mecz = Match.objects.get(id=matchID)
+                team = Team.objects.get(id=teamID)
+                sub = Substitution()
+                sub.prevPlayer = f.cleaned_data['prevPlayer']
+                sub.newPlayer = f.cleaned_data['newPlayer']
+                sub.time = f.cleaned_data['time']
+                sub.match = mecz
+                sub.team = team
+                sub.save()
+                return redirect('/match/'+m_id+'/')
+            else:
+                return redirect('/')
+        else:
+            mecz = Match.objects.get(id=matchID)
+            team = Team.objects.get(id=teamID)
+            f = forms.NewSub()
+            f.fields['prevPlayer'].queryset = Team_Player.objects.filter(team=team)
+            f.fields['newPlayer'].queryset = Team_Player.objects.filter(team=team)
+            return render_to_response('addSub.html', RequestContext(request, {'formset':f, 'mecz':mecz, 'team':team}))
+    else:
+        return redirect('/')
+
+def deletesub(request, s_id, m_id):
+    matchID = int(m_id)
+    subID = int(s_id)
+    if matchID > 0 and subID > 0 and request.session["verified"]==True:
+        sub = Substitution.objects.get(id=subID)
+        sub.delete()
+        return redirect('/match/'+m_id+'/')
+    else:
+        return redirect('/')

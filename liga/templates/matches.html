@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="title">Mecze drużyny {{ team.name }} w {{ league.name }}</div><br/>
+    <div class="title">Mecze drużyny {{ team.name }} w <a href="{% url 'league' league.id %}">{{ league.name }}</a></div><br/>
     {% if league.finished == False %}
     <a href="{% url 'newmatch' team.id league.id%}">Dodaj mecz</a>
     {% endif %}
@@ -24,7 +24,7 @@
                 <td>{{ mecz.homeGoals }} : {{ mecz.guestGoals }}</td>
                 <td>{{ mecz.guestTeam.name }}</td>
                 <td>{{ mecz.date }}</td>
-                <td><a href="">szczegóły</a> </td>
+                <td><a href="{% url 'match' mecz.id %}">szczegóły</a> </td>
             </tr>
         {% endfor %}
     </table>

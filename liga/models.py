@@ -56,6 +56,7 @@ class Match(models.Model):
 
 class Goal(models.Model):
     player=models.ForeignKey(Player)
+    team=models.ForeignKey(Team)
     time=models.IntegerField()
     match=models.ForeignKey(Match)
     isPenalty=models.BooleanField()
@@ -107,4 +108,4 @@ class Team_Player(models.Model):
     team=models.ForeignKey(Team)
     player=models.ForeignKey(Player)
     def __str__(self):  # Python 3: def __str__(self):
-        return self.team.name + "-" + self.player.surname
+        return self.player.surname + " " + self.player.name
