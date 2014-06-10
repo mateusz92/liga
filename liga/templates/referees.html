@@ -14,8 +14,8 @@
         </tr>
         {% for referee in refereeslist %}
             <tr>
-                <td>{{ referee.name }}</td>
-                <td>{{ referee.surname }}</td>
+                <td><a href="{% url 'referee' referee.id %}">{{ referee.name }}</a></td>
+                <td><a href="{% url 'referee' referee.id %}">{{ referee.surname }}</a></td>
                 {% if request.session.verified %}
                     <td><a href="{% url 'deletereferee' referee.id %}">usuń</a></td>
                 {% endif %}

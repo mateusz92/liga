@@ -9,6 +9,9 @@ from django.http import HttpResponseRedirect
 from liga import forms
 from liga.models import *
 from django.db.models import Q, Count
+from szkielety.settings import STATIC_ROOT
+import os
+import shutil
 
 
 def home(request):
@@ -181,6 +184,26 @@ def newplayer(request):
                 player.surname = f.cleaned_data['surname']
                 player.available = True
                 player.save()
+                if request.FILES.getlist('photo')!="":
+                    if not os.path.exists(STATIC_ROOT+'players'):
+                        os.mkdir(STATIC_ROOT+'players')
+                        os.mkdir(STATIC_ROOT+'players\\'+str(player.id))
+                    elif not os.path.exists(STATIC_ROOT+'players\\'+str(player.id)):
+                        os.mkdir(STATIC_ROOT+'players\\'+str(player.id))
+                    for f in request.FILES.getlist('photo'):
+                        name=f.name
+                        if 'jpg' in name or '.JPG' in name or '.gif' in name or '.GIF' in name or '.png' in name or '.PNG' in name:
+                            file = open(STATIC_ROOT+'players\\'+str(player.id)+'\\'+name, 'wb+')
+                            for chunk in f.chunks():
+                                file.write(chunk)
+                            file.close()
+                            player.photo= 'players\\'+str(player.id)+'\\'+name
+                            player.save()
+                        else:
+                            player.delete()
+                            msg = 'Niepoawidłowy typ pliku'
+                            f = forms.NewTeamForm()
+                            return render_to_response('newCoach.html', RequestContext(request, {'formset': f, 'msg' : msg}))
                 msg = 'Dodano zawodnika'
                 f = forms.NewPlayerForm()
                 return render_to_response('newPlayer.html', RequestContext(request, {'formset': f, 'msg' : msg}))
@@ -202,6 +225,8 @@ def deleteplayer(request, p_id = "0"):
     playerID = int(p_id)
     if playerID > 0 and request.session["verified"]==True:
         player = Player.objects.get(id=playerID)
+        if player.photo!='':
+            shutil.rmtree(STATIC_ROOT+'teams\\'+str(player.id))
         player.delete()
         palyerslist = Player.objects.all().order_by('surname')
         return render_to_response('players.html', RequestContext(request, {'palyerslist': palyerslist}))
@@ -222,6 +247,25 @@ def newreferee(request):
                 referee.name = f.cleaned_data['name']
                 referee.surname = f.cleaned_data['surname']
                 referee.save()
+                if request.FILES.get('photo') != '':
+                    name=request.FILES['photo'].name
+                    if 'jpg' in name or '.JPG' in name or '.gif' in name or '.GIF' in name or '.png' in name or '.PNG' in name:
+                        if not os.path.exists(STATIC_ROOT+'referees'):
+                            os.mkdir(STATIC_ROOT+'referees')
+                            os.mkdir(STATIC_ROOT+'referees\\'+str(referee.id))
+                        elif not os.path.exists(STATIC_ROOT+'referees\\'+str(referee.id)):
+                            os.mkdir(STATIC_ROOT+'referees\\'+str(referee.id))
+                        file = open(STATIC_ROOT+'referees\\'+str(referee.id)+'\\'+name, 'wb+')
+                        for chunk in request.FILES['photo'].chunks():
+                            file.write(chunk)
+                        file.close()
+                        referee.photo= 'referees\\'+str(referee.id)+'\\'+name
+                        referee.save()
+                    else:
+                        referee.delete()
+                        msg = 'Niepoawidłowy typ pliku'
+                        f = forms.NewTeamForm()
+                        return render_to_response('newReferee.html', RequestContext(request, {'formset': f, 'msg' : msg}))
                 msg = 'Dodano sędziego'
                 f = forms.NewRefereeForm()
                 return render_to_response('newReferee.html', RequestContext(request, {'formset': f, 'msg' : msg}))
@@ -243,6 +287,8 @@ def deletereferee(request, r_id = "0"):
     refereeID = int(r_id)
     if refereeID > 0 and request.session["verified"]==True:
         player = Referee.objects.get(id=refereeID)
+        if player.photo!='':
+            shutil.rmtree(STATIC_ROOT+'teams\\'+str(player.id))
         player.delete()
         refereeslist = Referee.objects.all().order_by('surname')
         return render_to_response('referees.html', RequestContext(request, {'refereeslist': refereeslist}))
@@ -263,6 +309,26 @@ def newcoach(request):
                 coach.name = f.cleaned_data['name']
                 coach.surname = f.cleaned_data['surname']
                 coach.save()
+                if request.FILES.get('photo') != '':
+                    name=request.FILES['photo'].name
+                    if 'jpg' in name or '.JPG' in name or '.gif' in name or '.GIF' in name or '.png' in name or '.PNG' in name:
+                        if not os.path.exists(STATIC_ROOT+'coachs'):
+                            os.mkdir(STATIC_ROOT+'coachs')
+                            os.mkdir(STATIC_ROOT+'coachs\\'+str(coach.id))
+                        elif not os.path.exists(STATIC_ROOT+'coachs\\'+str(coach.id)):
+                            os.mkdir(STATIC_ROOT+'coachs\\'+str(coach.id))
+                            print(STATIC_ROOT+'coachs\\'+str(coach.id)+'\\'+name)
+                        file = open(STATIC_ROOT+'coachs\\'+str(coach.id)+'\\'+name, 'wb+')
+                        for chunk in request.FILES['photo'].chunks():
+                            file.write(chunk)
+                        file.close()
+                        coach.photo= 'coachs\\'+str(coach.id)+'\\'+name
+                        coach.save()
+                    else:
+                        coach.delete()
+                        msg = 'Niepoawidłowy typ pliku'
+                        f = forms.NewTeamForm()
+                        return render_to_response('newCoach.html', RequestContext(request, {'formset': f, 'msg' : msg}))
                 msg = 'Dodano trenera'
                 f = forms.NewCoachForm()
                 return render_to_response('newCoach.html', RequestContext(request, {'formset': f, 'msg' : msg}))
@@ -284,6 +350,8 @@ def deletecoach(request, c_id = "0"):
     coachID = int(c_id)
     if coachID > 0 and request.session["verified"]==True:
         coach = Coach.objects.get(id=coachID)
+        if coach.photo!='':
+            shutil.rmtree(STATIC_ROOT+'coachs\\'+str(coach.id))
         coach.delete()
         coacheslist = Coach.objects.all().order_by('surname')
         return render_to_response('coaches.html', RequestContext(request, {'coacheslist': coacheslist}))
@@ -295,16 +363,35 @@ def newteam(request):
         if request.method == 'POST':
             f = forms.NewTeamForm(request.POST)
             if f.is_valid():
+                team=Team()
                 czy_jest = Team.objects.filter(name=f.cleaned_data['name']).count()
                 if czy_jest > 0:
                     msg = 'Drużyna już istnieje'
                     f = forms.NewTeamForm()
                     return render_to_response('newTeam.html', RequestContext(request, {'formset': f, 'msg' : msg}))
-                team = Team()
                 team.name = f.cleaned_data['name']
                 team.coach = f.cleaned_data['coach']
                 team.available = True
                 team.save()
+                if request.FILES.get('photo') != '':
+                    name=request.FILES['photo'].name
+                    if 'jpg' in name or '.JPG' in name or '.gif' in name or '.GIF' in name or '.png' in name or '.PNG' in name:
+                        if not os.path.exists(STATIC_ROOT+'teams'):
+                            os.mkdir(STATIC_ROOT+'teams')
+                            os.mkdir(STATIC_ROOT+'teams\\'+str(team.id))
+                        elif not os.path.exists(STATIC_ROOT+'teams\\'+str(team.id)):
+                            os.mkdir(STATIC_ROOT+'teams\\'+str(team.id))
+                        file = open(STATIC_ROOT+'teams\\'+str(team.id)+'\\'+name, 'wb+')
+                        for chunk in request.FILES['photo'].chunks():
+                            file.write(chunk)
+                        file.close()
+                        team.emblem = 'teams\\'+str(team.id)+'\\'+name
+                        team.save()
+                    else:
+                        team.delete()
+                        msg = 'Niepoawidłowy typ pliku'
+                        f = forms.NewTeamForm()
+                        return render_to_response('newTeam.html', RequestContext(request, {'formset': f, 'msg' : msg}))
                 msg = 'Dodano drużynę'
                 f = forms.NewTeamForm()
                 return render_to_response('newTeam.html', RequestContext(request, {'formset': f, 'msg' : msg}))
@@ -326,6 +413,8 @@ def deleteteam(request, t_id = "0"):
     teamID = int(t_id)
     if teamID > 0 and request.session["verified"]==True:
         team = Team.objects.get(id=teamID)
+        if team.emblem!='':
+            shutil.rmtree(STATIC_ROOT+'teams\\'+str(team.id))
         team.delete()
         teamslist = Team.objects.all().order_by('name')
         return render_to_response('teams.html', RequestContext(request, {'teamslist': teamslist}))
@@ -746,3 +835,48 @@ def deletesub(request, s_id, m_id):
         return redirect('/match/'+m_id+'/')
     else:
         return redirect('/')
+def player(request,player_id):
+    allgoals=0
+    leaguegoals=0
+    playerteam=''
+    hasteam=False
+    yellowcards=0
+    redcards=0
+    matchesplayed=0
+    player=Player.objects.get(id=player_id)
+    try:
+        goals=Goal.objects.filter(player=player)
+        allgoals=goals.count()
+        team_player=Team_Player.objects.get(player=player)
+        playerteam=team_player.team
+        hasteam=True
+        if hasteam==True:
+            leagueteamplayer=League_Team_Player.objects.get(Q(team=playerteam) & Q(player=player))
+            playerteammatches=Match.objects.filter((Q(homeTeam=playerteam)&Q(league=leagueteamplayer.league))|(Q(guestTeam=playerteam)&Q(league=leagueteamplayer.league)))
+            for match in playerteammatches:
+                pstats=PlayerStats.objects.filter(Q(player=player)&Q(team=playerteam)&Q(match=match))
+                for playerstat in pstats:
+                    matchesplayed+=1
+                    if(playerstat.yellowCard):
+                        yellowcards+=1
+                    if(playerstat.redCart):
+                        redcards+=1
+                leaguegoals=leaguegoals+Goal.objects.filter(Q(match=match)&Q(player=player)).count()
+    except:
+        hasteam=False
+    context=RequestContext(request,{'player':player,'hasteam':hasteam,'team':playerteam,'playerleaguegoals':leaguegoals,'playergoals':allgoals,'playermatch':matchesplayed,'playerleagueyellowcard':yellowcards,'playerleagueredcard':redcards,})
+    return render_to_response('player.html',context)
+def coach(request,coach_id):
+    coach=Coach.objects.get(id=coach_id)
+    teams=Team.objects.filter(coach=coach)
+    context=RequestContext(request,{'coach':coach,'team':team})
+    return render_to_response('coach.html',context)
+def referee(request,referee_id):
+    referee=Coach.objects.get(id=referee_id)
+    match=Match.objects.filter(referee=referee).order_by('date')[:1]
+    lastmatch=''
+    if match.count()>0:
+        lastmatch=match.first()
+    context=RequestContext(request,{'referee':referee,'lastmatch':lastmatch})
+    return render_to_response('referee.html',context)
+

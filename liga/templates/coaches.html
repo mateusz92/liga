@@ -14,8 +14,8 @@
         </tr>
         {% for coach in coacheslist %}
             <tr>
-                <td>{{ coach.name }}</td>
-                <td>{{ coach.surname }}</td>
+                <td><a href="{% url 'coach' coach.id %}">{{ coach.name }}</a></td>
+                <td><a href="{% url 'coach' coach.id %}">{{ coach.surname }}</a></td>
                 {% if request.session.verified %}
                     <td><a href="{% url 'deletecoach' coach.id %}">usuń</a></td>
                 {% endif %}

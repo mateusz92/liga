@@ -4,6 +4,7 @@ from django.db import models
 class Coach(models.Model):
     name=models.CharField(max_length=50)
     surname=models.CharField(max_length=50)
+    photo=models.CharField(max_length=100, null=True,blank=True)
     def __str__(self):  # Python 3: def __str__(self):
         return self.name + " " + self.surname
 
@@ -20,6 +21,7 @@ class User(models.Model):
 class Team(models.Model):
     name=models.CharField(max_length=50)
     available= models.BooleanField()
+    emblem=models.CharField(max_length=100, null=True,blank=True)
     coach=models.ForeignKey(Coach)
     def __str__(self):  # Python 3: def __str__(self):
         return self.name
@@ -33,6 +35,7 @@ class League(models.Model):
 class Player(models.Model):
     name=models.CharField(max_length=50)
     surname=models.CharField(max_length=50)
+    photo=models.CharField(max_length=100, null=True,blank=True)
     available=models.BooleanField()
     def __str__(self):  # Python 3: def __str__(self):
         return self.name + " " + self.surname
@@ -40,6 +43,7 @@ class Player(models.Model):
 class Referee(models.Model):
     name=models.CharField(max_length=50)
     surname=models.CharField(max_length=50)
+    photo=models.CharField(max_length=100, null=True,blank=True)
     def __str__(self):  # Python 3: def __str__(self):
         return self.name + " " + self.surname
 

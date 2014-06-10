@@ -15,9 +15,17 @@
             {% csrf_token %}
             <table>
                 {{ formset }}
+                <tr>
+                    <th>
+                        <label>Zdjęcie profilowe:</label>
+                    </th>
+                    <td>
+                        <input type="file" name="photo">
+                    </td>
+                </tr>
                 </br>
             </table>
-            <input type="submit" class="btn btn-default" value="Dodaj">
+            <input type="submit" class="btn btn-default" formenctype="multipart/form-data" value="Dodaj">
             <input type="reset" class="btn btn-default" value="Anuluj">
         </form>
     </div>

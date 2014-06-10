@@ -43,4 +43,7 @@ urlpatterns = patterns('',
     url(r'^deletestats/(?P<s_id>\d+)/(?P<m_id>\d+)/', views.deletestats, name='deletestats'),
     url(r'^addsub/(?P<m_id>\d+)/(?P<t_id>\d+)/', views.addsub, name='addsub'),
     url(r'^deletesub/(?P<s_id>\d+)/(?P<m_id>\d+)/', views.deletestats, name='deletesub'),
+    url(r'player/(?P<player_id>\d+)/',views.player,name='player'),
+    url(r'coach/(?P<coach_id>\d+)/',views.coach,name='coach'),
+    url(r'referee/(?P<referee_id>\d+)/',views.referee,name='referee'),
 )

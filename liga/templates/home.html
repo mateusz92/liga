@@ -6,5 +6,26 @@
 {% endblock %}
 
 {% block content %}
-    Strona główna
+    <div>
+        <div id="main_header">
+            Twoja liga
+        </div>
+        <div id="main_content">
+            <div id="picture">
+                <img src="{{ STATIC_URL }}pilkarze.gif" alt="kopacze">
+            </div>
+            <div id="main_text">
+                <p style="text-align: center; font-weight: bold">Witaj w portalu Twoja liga!</p>
+                Jeśli jesteś organizatorem zawodów piłkarskich,fanem piłki nożnej
+                lub po prostu szukasz miejsca gdzie możesz zarządzać swoją piłkarską ligę
+                to trafiłeś w idealne miejsce.
+                Twoja liga pozwala na tworzenie lig, drużyn, zawodników, trenerów i sędziów
+                oraz wprowadzanie danych i statystyk dotyczących poszczególnych meczów.
+                Możesz przenieść rzeczywiste rozgrywki na poziom wirtualny i udostępniać do wglądu
+                swoim znajomym, kompanom z boiska, zawodnikom lub komukoliwek innemu.
+                Już teraz zarejestruj się i sprawdź jakie możliwości daje Twoja liga!
+
+            </div>
+        </div>
+    </div>
 {% endblock %}

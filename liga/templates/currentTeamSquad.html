@@ -6,6 +6,10 @@
 {% endblock %}
 
 {% block content %}
+    <img src="{{ STATIC_URL }}{{ team.emblem }}" style="float: left;  height: 100px;width: 100px" alt="">
+    <div class="title" style="margin-top: 30px">
+        {{team.name }}
+    </div><br/><br/><br/><br/>
     Trener: {{ coach.name }} {{ coach.surname }}
     <br>
     <br>

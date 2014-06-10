@@ -138,3 +138,7 @@ td{
 {
      text-align: center;
 }
+.normal> tbody > tr >td,.normal> tbody > tr >td>a
+{
+    background-color: white!important;
+}

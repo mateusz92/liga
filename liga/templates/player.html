@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% block title %}
+    Zawodnik
+{% endblock %}
+
+{% block content %}
+    <div class="title">Profil zawodnika</div><br>
+        <img style="display: inline-block" src={% if player.photo %}
+                    "{{ STATIC_URL }}{{ player.photo }}"
+                {% else %}
+                    "{{ STATIC_URL }}photo.png"
+                {% endif %}
+             alt="obrazek" height="200px" width="250px">
+        <div class="profile" style="float: right;margin-right: 50px;">
+            <table>
+                <tr>
+                    <td>
+                        <b>Imię:</b>
+                    </td>
+                    <td>
+                        {{ player.name }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Nazwisko</b>
+                    </td>
+                    <td>
+                        {{ player.surname }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Aktualna drużyna</b>
+                    </td>
+                    <td>
+                        {% if hasteam%}
+                        {{ team.name }}
+                        {% else %}
+                            brak
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    <br>
+    <br>
+    <h2>Statystyki</h2>
+    <table class="normal">
+        <tr>
+            <td>
+                Strzelone bramki w sezonie:
+            </td>
+            <td>
+                {{ playerleaguegoals }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Strzelone bramki w karierze:
+            </td>
+            <td>
+                {{ playergoals }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Rozegrane mecze w sezonie:
+            </td>
+            <td>
+                {{ playermatch }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+               Otrzymane żółte kartki:
+            </td>
+            <td>
+                {{ playerleagueyellowcard }}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Otrzymane czerwone kartki:
+            </td>
+            <td>
+                {{ playerleagueredcard }}
+            </td>
+        </tr>
+    </table>
+{% endblock %}

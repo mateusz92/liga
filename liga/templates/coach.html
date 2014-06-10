@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% block title %}
+    Trener
+{% endblock %}
+
+{% block content %}
+    <div class="title">Profil trenera</div><br>
+        <img style="display: inline-block" src={% if coach.photo %}
+                    "{{ STATIC_URL }}{{ coach.photo }}"
+                {% else %}
+                    "{{ STATIC_URL }}photo.png"
+                {% endif %}
+             alt="obrazek" height="200px" width="250px">
+        <div class="profile" style="float: right;margin-right: 100px;">
+            <table>
+                <tr>
+                    <td>
+                        <b>Imię:</b>
+                    </td>
+                    <td>
+                        {{ coach.name }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Nazwisko</b>
+                    </td>
+                    <td>
+                        {{ coach.surname }}
+                    </td>
+                </tr>
+                <tr>
+
+                {% if hasteam and coachlistteam.count == 1 %}
+                    <td>
+                        <b>Drużyna:</b>
+                    </td>
+                    <td>
+                     {% for team in coachlistteam %}
+                        {{ team.name }}
+                     {% endfor %}
+                {% elif hasteam and coachlistteam.count > 1 %}
+                    <td>
+                        <b>Drużyny:</b>
+                    </td>
+                    <td>
+                            <br>
+                    <ul>
+                        {% for team in coachlistteam %}
+                            <li>
+                                {{ team.name }}
+                            </li>
+                        {% endfor %}
+                {% else %}
+                    <td>
+                        <b>Drużyna:</b>
+                    </td>
+                    <td>
+                            brak
+                {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+{% endblock %}
